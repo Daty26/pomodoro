@@ -15,8 +15,17 @@ func main() {
 	work := flag.Int("work", 25, "Work session minutes")
 	short := flag.Int("short", 5, "short session minutes")
 	long := flag.Int("long", 15, "long session minutes")
+	reset := flag.Bool("reset", false, "Reset all logs")
 
 	flag.Parse()
+	if *reset {
+		err := os.Remove("pomodoro_logs.json")
+		if err != nil {
+			fmt.Println("Error occured: " + err.Error())
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
 	logs := storage.LoadLogs()
 	stats.ShowStats(logs)
 	p := tea.NewProgram(model.Model{
